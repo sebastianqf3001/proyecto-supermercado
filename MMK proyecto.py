@@ -8,6 +8,9 @@ class Supermercado:
         self.Cantidad_de_cajas = numb_cajas
         self.cajas = self.create_cajas_normales(numb_cajas)
         self.cajas_rapidas = self.create_cajas_normales(numb_cajas_rapidas)
+        self.fila_cajas_rapidas = [] #Aquí van en orden los indices de las personas
+        self.Cola_rapida =0
+
         self.personas = []  #Lista que irá guardando personas que irán llegando
         self.Personas_totales = 0
         self.Personas_atendidas = 0
@@ -38,6 +41,7 @@ class Persona:
         
         self.ya_compro=False
         self.ya_fue_atendido=False
+        self.escoge_caja_rapida = False
         self.indice_de_persona = indice  #Asignamos indice a persona
         
 
@@ -60,7 +64,7 @@ def taylor_serie(x):
         y = 4.833468511100568e-61 * (x - 368.0)**25 + 1.104321097541718e-59 * (x - 368.0)**24 + -6.764502240882454e-55 * (x - 368.0)**23 + -1.164401773589306e-53 * (x - 368.0)**22 + 4.1460818454159185e-49 * (x - 368.0)**21 + 4.667870353711148e-48 * (x - 368.0)**20 + -1.4659596525009974e-43 * (x - 368.0)**19 + -7.746370031433263e-43 * (x - 368.0)**18 + 3.3167058552077726e-38 * (x - 368.0)**17 + -5.671961723527083e-39 * (x - 368.0)**16 + -5.037697259426038e-33 * (x - 368.0)**15 + 2.1449400770960893e-32 * (x - 368.0)**14 + 5.246041343119162e-28 * (x - 368.0)**13 + -3.0614021619992635e-27 * (x - 368.0)**12 + -3.758438093424414e-23 * (x - 368.0)**11 + 1.4169551592324059e-22 * (x - 368.0)**10 + 1.8287770822228958e-18 * (x - 368.0)**9 + 4.140212800064939e-18 * (x - 368.0)**8 + -5.834669245448097e-14 * (x - 368.0)**7 + -6.155984615892722e-13 * (x - 368.0)**6 + 1.1341045785547847e-09 * (x - 368.0)**5 + 1.884961111267024e-08 * (x - 368.0)**4 + -1.1601179506002755e-05 * (x - 368.0)**3 + -0.00019698650221112288 * (x - 368.0)**2 + 0.04565345572605308 * (x - 368.0)**1 + 6.0506699555558985 * (x - 368.0)**0
         return y
 
-def generar_llegada(T):    
+def generar_llegada(T):
     aceptar=False
     tasa_maxima= 6.992949261062695
     while aceptar == False:
@@ -96,7 +100,7 @@ def escoge_caja_rapida_o_normal():
         eleccion = "caja_normal"
     return eleccion
 
-def Simulacion(a,b,c,Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas):
+def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas):
     T = 0 # Reloj
     Stop=False
 
@@ -108,6 +112,8 @@ def Simulacion(a,b,c,Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas)
     TP3 = np.inf # atencion de cliente 1
 
     ESTOT=0 #Variable auxiliar guardadora de tiempos de espera
+    Porcentaje_sumado_cajas_normales=0 #Variable auxiliar guardadora de porcentajes de ocupación cajas normales
+    Porcentaje_sumado_cajas_rapidas=0   #Variable auxiliar guardadora de porcentajes de ocupación cajas rápidas
 
 
     while (Stop==False): #condición de stop
@@ -128,73 +134,135 @@ def Simulacion(a,b,c,Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas)
 
         elif TP2 < TP1 and TP2 < TP3:   #Si es que el tiempo de compra va antes que uno de llegada y atención:
             T = TP2 #Actualizo el tiempo a tiempo de compra
-            supermercado.personas[persona_que_termina_de_comprar_ahora].ya_compro = True
-
-            Hay_alguna_caja_desocupada = False  #Verifico si es que hay alguna caja desocupada
-            cajas_desocupadas = []    
-            for i in range(len(supermercado.cajas)):    
-                if supermercado.cajas[i].Ocupada == False:
-                    Hay_alguna_caja_desocupada = True
-                    cajas_desocupadas.append(supermercado.cajas[i].indice_de_caja)
-
+            supermercado.personas[persona_que_termina_de_comprar_ahora].ya_compro = True #Digo que ya compró la persona
+            caja_que_escoge_persona = escoge_caja_rapida_o_normal() #Veo si escoge caja normal o rápida
             
-            if Hay_alguna_caja_desocupada==True:    #Si es que había una caja desocupada
 
-                Tiempo_que_durara_esta_atencion=ExponentialInstance(c)  #Creo un tiempo que durará esta atención
+            if caja_que_escoge_persona == "caja_normal":    #Si es que escoge una caja rápida
 
-                caja_escogida = cajas_desocupadas[rd.randint(0, len(cajas_desocupadas)-1)]    #Escojo una caja random entre las que estaban desocupadas
-                supermercado.cajas[caja_escogida].Ocupada = True    #La caja escogida se está ocupando ahora
-                supermercado.cajas[caja_escogida].persona_siendo_atendida = persona_que_termina_de_comprar_ahora #Le especifico que persona entró a la caja
-                supermercado.cajas[caja_escogida].tiempo_de_uso += Tiempo_que_durara_esta_atencion  #Le agrego al tiempo de uso de la caja el tiempo que durará la atención
+                supermercado.personas[persona_que_termina_de_comprar_ahora].escoge_caja_rapida = False
 
-                supermercado.personas[persona_que_termina_de_comprar_ahora].hora_de_atencion = T + Tiempo_que_durara_esta_atencion    #Le creo un tiempo de termino de la atención a esta persona
-                supermercado.Personas_atendidas += 1 #Agrego una persona más a los atendidos
+                Hay_alguna_caja_desocupada = False  #Verifico si es que hay alguna caja desocupada
+                cajas_desocupadas = []    
+                for i in range(len(supermercado.cajas)):    
+                    if supermercado.cajas[i].Ocupada == False:
+                        Hay_alguna_caja_desocupada = True
+                        cajas_desocupadas.append(supermercado.cajas[i].indice_de_caja)
+
                 
-            else:   #Si es que no hay cajas desocupadas
-                
-                fila_menor = np.inf
-                for i in range(len(supermercado.cajas)):    #Busco entre todas las cajas la menor fila
-                    if supermercado.cajas[i].Cola < fila_menor:
-                        fila_menor=supermercado.cajas[i].Cola
+                if Hay_alguna_caja_desocupada==True:    #Si es que había una caja desocupada
 
-                cajas_de_menor_fila=[]
-                for i in range(len(supermercado.cajas)): #Busco entre todas las cajas las que tengan esta menor fila
-                    if supermercado.cajas[i].Cola == fila_menor:
-                        cajas_de_menor_fila.append(supermercado.cajas[i].indice_de_caja)
+                    Tiempo_que_durara_esta_atencion= rd.lognormvariate(0.97,0.57)  #Creo un tiempo que durará esta atención caja normal
 
-                caja_escogida = cajas_de_menor_fila[rd.randint(0, len(cajas_de_menor_fila)-1)]  #Escojo una caja entre todas las que tengan menor fila
-                supermercado.cajas[caja_escogida].Cola += 1 #Agregamos al contador de la fila de esta caja una persona más
-                
-                supermercado.cajas[caja_escogida].orden_de_clientes_en_cola.append(persona_que_termina_de_comprar_ahora) #Agrego la persona a la fila de la caja
+                    caja_escogida = cajas_desocupadas[rd.randint(0, len(cajas_desocupadas)-1)]    #Escojo una caja random entre las que estaban desocupadas
+                    supermercado.cajas[caja_escogida].Ocupada = True    #La caja escogida se está ocupando ahora
+                    supermercado.cajas[caja_escogida].persona_siendo_atendida = persona_que_termina_de_comprar_ahora #Le especifico que persona entró a la caja
+                    supermercado.cajas[caja_escogida].tiempo_de_uso += Tiempo_que_durara_esta_atencion  #Le agrego al tiempo de uso de la caja el tiempo que durará la atención
 
-                supermercado.personas[persona_que_termina_de_comprar_ahora].hora_que_entra_en_cola = T  #Indico el tiempo que empezó a hacer la fila la persona
+                    supermercado.personas[persona_que_termina_de_comprar_ahora].hora_de_atencion = T + Tiempo_que_durara_esta_atencion    #Le creo un tiempo de termino de la atención a esta persona
+                    supermercado.Personas_atendidas += 1 #Agrego una persona más a los atendidos
+                    
+                else:   #Si es que no hay cajas desocupadas
+                    
+                    fila_menor = np.inf
+                    for i in range(len(supermercado.cajas)):    #Busco entre todas las cajas la menor fila
+                        if supermercado.cajas[i].Cola < fila_menor:
+                            fila_menor=supermercado.cajas[i].Cola
+
+                    cajas_de_menor_fila=[]
+                    for i in range(len(supermercado.cajas)): #Busco entre todas las cajas las que tengan esta menor fila
+                        if supermercado.cajas[i].Cola == fila_menor:
+                            cajas_de_menor_fila.append(supermercado.cajas[i].indice_de_caja)
+
+                    caja_escogida = cajas_de_menor_fila[rd.randint(0, len(cajas_de_menor_fila)-1)]  #Escojo una caja entre todas las que tengan menor fila
+                    supermercado.cajas[caja_escogida].Cola += 1 #Agregamos al contador de la fila de esta caja una persona más
+                    
+                    supermercado.cajas[caja_escogida].orden_de_clientes_en_cola.append(persona_que_termina_de_comprar_ahora) #Agrego la persona a la fila de la caja
+
+                    supermercado.personas[persona_que_termina_de_comprar_ahora].hora_que_entra_en_cola = T  #Indico el tiempo que empezó a hacer la fila la persona
+
+            elif caja_que_escoge_persona == "caja_rapida":  #Si es que escoje caja rápida
+
+                supermercado.personas[persona_que_termina_de_comprar_ahora].escoge_caja_rapida = True
+
+                Hay_alguna_caja_desocupada = False  #Verifico si es que hay alguna caja rápida desocupada
+                cajas_desocupadas = []    
+                for i in range(len(supermercado.cajas_rapidas)):    
+                    if supermercado.cajas_rapidas[i].Ocupada == False:
+                        Hay_alguna_caja_desocupada = True
+                        cajas_desocupadas.append(supermercado.cajas_rapidas[i].indice_de_caja)
+
+                if Hay_alguna_caja_desocupada==True:    #Si es que había una caja rápida desocupada
+
+                    Tiempo_que_durara_esta_atencion= rd.expovariate(0.57)  #Creo un tiempo que durará esta caja rápida
+
+                    caja_escogida = cajas_desocupadas[rd.randint(0, len(cajas_desocupadas)-1)]    #Escojo una caja random entre las que estaban desocupadas
+                    supermercado.cajas_rapidas[caja_escogida].Ocupada = True    #La caja escogida se está ocupando ahora
+                    supermercado.cajas_rapidas[caja_escogida].persona_siendo_atendida = persona_que_termina_de_comprar_ahora #Le especifico que persona entró a la caja
+                    supermercado.cajas_rapidas[caja_escogida].tiempo_de_uso += Tiempo_que_durara_esta_atencion  #Le agrego al tiempo de uso de la caja el tiempo que durará la atención
+
+                    supermercado.personas[persona_que_termina_de_comprar_ahora].hora_de_atencion = T + Tiempo_que_durara_esta_atencion    #Le creo un tiempo de termino de la atención a esta persona
+                    supermercado.Personas_atendidas += 1 #Agrego una persona más a los atendidos
                 
+                else: #Si no hay cajas rápidas desocupadas:
+                    supermercado.Cola_rapida += 1 #Agregamos al contador de la fila de cajas rápidas una persona más
+                    
+                    supermercado.fila_cajas_rapidas.append(persona_que_termina_de_comprar_ahora) #Agrego la persona a la fila de la caja rápida
+
+                    supermercado.personas[persona_que_termina_de_comprar_ahora].hora_que_entra_en_cola = T  #Indico el tiempo que empezó a hacer la fila la persona
+
         elif TP3 < TP1 and TP3 < TP2:   #Si es que el tiempo de atención va antes que uno de llegada y compra:
             T = TP3 #Actualizo el tiempo a tiempo de atención
             supermercado.personas[persona_que_es_atendida_ahora].ya_fue_atendido = True
 
-            for i in range(len(supermercado.cajas)):
-                if supermercado.cajas[i].persona_siendo_atendida == persona_que_es_atendida_ahora:  #Busco la caja donde acaba de ser atendida la persona
-                    caja_atendiendo = i
-            
-            
-            if supermercado.cajas[caja_atendiendo].Cola > 0:    #Reviso si esta caja tiene una cola, y si es que sí:
-                persona_que_iba_despues_de_la_que_acaba_de_ser_atendida = supermercado.cajas[caja_atendiendo].orden_de_clientes_en_cola[0] #Veo quién iba después de la persona que acaba de ser atendida
-                supermercado.personas[persona_que_iba_despues_de_la_que_acaba_de_ser_atendida].tiempo_total_en_cola = T - supermercado.personas[persona_que_iba_despues_de_la_que_acaba_de_ser_atendida].hora_que_entra_en_cola #Calculo cuanto estuvo esperando esta persona en la fila
-                supermercado.cajas[caja_atendiendo].orden_de_clientes_en_cola=supermercado.cajas[caja_atendiendo].orden_de_clientes_en_cola[1:] #Elimino a esta persona de la fila
-                supermercado.cajas[caja_atendiendo].Cola -= 1   #Quito del contador de la cola a una persona 
+            if supermercado.personas[persona_que_es_atendida_ahora].escoge_caja_rapida == False: #Si es que la persona que va a ser atendida estaba en caja normal
 
-                Tiempo_que_durara_esta_atencion = ExponentialInstance(c)  #Creo un tiempo que durará esta atención de esta nueva persona
-
-                supermercado.cajas[caja_atendiendo].persona_siendo_atendida = persona_que_iba_despues_de_la_que_acaba_de_ser_atendida   #Actualizo la persona que esta siendo atendida ahora   
-                supermercado.cajas[caja_atendiendo].tiempo_de_uso += Tiempo_que_durara_esta_atencion    #Agrego tiempo de uso a la caja
-                supermercado.personas[persona_que_iba_despues_de_la_que_acaba_de_ser_atendida].hora_de_atencion = T + Tiempo_que_durara_esta_atencion #Creo tiempo de termino de atención para esta persona
-                supermercado.Personas_atendidas += 1    #Agrego una persona más a los atendidos
+                for i in range(len(supermercado.cajas)):
+                    if supermercado.cajas[i].persona_siendo_atendida == persona_que_es_atendida_ahora:  #Busco la caja donde acaba de ser atendida la persona
+                        caja_atendiendo = i
                 
-
-            else:   #Si es que no había cola en la caja:
-                supermercado.cajas[caja_atendiendo].Ocupada = False #Cambio el estado de la caja a desocupada
                 
+                if supermercado.cajas[caja_atendiendo].Cola > 0:    #Reviso si esta caja tiene una cola, y si es que sí:
+                    persona_que_iba_despues_de_la_que_acaba_de_ser_atendida = supermercado.cajas[caja_atendiendo].orden_de_clientes_en_cola[0] #Veo quién iba después de la persona que acaba de ser atendida
+                    supermercado.personas[persona_que_iba_despues_de_la_que_acaba_de_ser_atendida].tiempo_total_en_cola = T - supermercado.personas[persona_que_iba_despues_de_la_que_acaba_de_ser_atendida].hora_que_entra_en_cola #Calculo cuanto estuvo esperando esta persona en la fila
+                    supermercado.cajas[caja_atendiendo].orden_de_clientes_en_cola=supermercado.cajas[caja_atendiendo].orden_de_clientes_en_cola[1:] #Elimino a esta persona de la fila
+                    supermercado.cajas[caja_atendiendo].Cola -= 1   #Quito del contador de la cola a una persona 
+
+                    Tiempo_que_durara_esta_atencion = rd.lognormvariate(0.97,0.57)  #Creo un tiempo que durará esta atención de esta nueva persona
+
+                    supermercado.cajas[caja_atendiendo].persona_siendo_atendida = persona_que_iba_despues_de_la_que_acaba_de_ser_atendida   #Actualizo la persona que esta siendo atendida ahora   
+                    supermercado.cajas[caja_atendiendo].tiempo_de_uso += Tiempo_que_durara_esta_atencion    #Agrego tiempo de uso a la caja
+                    supermercado.personas[persona_que_iba_despues_de_la_que_acaba_de_ser_atendida].hora_de_atencion = T + Tiempo_que_durara_esta_atencion #Creo tiempo de termino de atención para esta persona
+                    supermercado.Personas_atendidas += 1    #Agrego una persona más a los atendidos
+                    
+
+                else:   #Si es que no había cola en la caja:
+                    supermercado.cajas[caja_atendiendo].Ocupada = False #Cambio el estado de la caja a desocupada
+            
+            elif supermercado.personas[persona_que_es_atendida_ahora].escoge_caja_rapida == True: #Si es que la persona que va a ser atendida estaba en caja rápida
+
+                for i in range(len(supermercado.cajas_rapidas)):
+                    if supermercado.cajas_rapidas[i].persona_siendo_atendida == persona_que_es_atendida_ahora:  #Busco la caja donde acaba de ser atendida la persona
+                        caja_rapida_atendiendo = i
+                
+                
+                if supermercado.Cola_rapida > 0:
+                    
+                    persona_que_iba_despues_de_la_que_acaba_de_ser_atendida = supermercado.fila_cajas_rapidas[0] #Veo quién iba después de la persona que acaba de ser atendida
+                    supermercado.personas[persona_que_iba_despues_de_la_que_acaba_de_ser_atendida].tiempo_total_en_cola = T - supermercado.personas[persona_que_iba_despues_de_la_que_acaba_de_ser_atendida].hora_que_entra_en_cola #Calculo cuanto estuvo esperando esta persona en la fila
+                    supermercado.fila_cajas_rapidas=supermercado.fila_cajas_rapidas[1:] #Elimino a esta persona de la fila
+                    supermercado.Cola_rapida -= 1   #Quito del contador de la cola a una persona
+
+                    Tiempo_que_durara_esta_atencion = rd.expovariate(0.57)  #Creo un tiempo que durará esta atención de esta nueva persona
+
+                    supermercado.cajas_rapidas[caja_rapida_atendiendo].persona_siendo_atendida = persona_que_iba_despues_de_la_que_acaba_de_ser_atendida   #Actualizo la persona que esta siendo atendida ahora   
+                    supermercado.cajas_rapidas[caja_rapida_atendiendo].tiempo_de_uso += Tiempo_que_durara_esta_atencion    #Agrego tiempo de uso a la caja
+                    supermercado.personas[persona_que_iba_despues_de_la_que_acaba_de_ser_atendida].hora_de_atencion = T + Tiempo_que_durara_esta_atencion #Creo tiempo de termino de atención para esta persona
+                    supermercado.Personas_atendidas += 1    #Agrego una persona más a los atendidos
+
+                else:   #Si es que no había cola en la caja:
+                    supermercado.cajas_rapidas[caja_rapida_atendiendo].Ocupada = False #Cambio el estado de la caja a desocupada     
+
         #Estado del supermercado para las siguientes iteraciones        
 
 
@@ -230,7 +298,12 @@ def Simulacion(a,b,c,Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas)
   
     for i in range(len(supermercado.personas)):
         ESTOT += supermercado.personas[i].tiempo_total_en_cola
-    return [(ESTOT/supermercado.Personas_totales),supermercado.cajas[0].tiempo_de_uso*100/T] #Calculamos promedio de espera
+    for i in range(len(supermercado.cajas)):
+        Porcentaje_sumado_cajas_normales += supermercado.cajas[i].tiempo_de_uso*100/T
+    for i in range(len(supermercado.cajas_rapidas)):
+        Porcentaje_sumado_cajas_rapidas += supermercado.cajas_rapidas[i].tiempo_de_uso*100/T
+    return [(ESTOT/supermercado.Personas_totales),(Porcentaje_sumado_cajas_normales/len(supermercado.cajas)),
+            (Porcentaje_sumado_cajas_rapidas/len(supermercado.cajas_rapidas))] #Calculamos promedio de espera y promedio de porcentaje de ocupación
 
 
 
@@ -239,14 +312,12 @@ def Simulacion(a,b,c,Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas)
 initial_time = time.time()
 suma=0
 for i in range(10):
-    simu=Simulacion(3,1/15,0.606,720,15,0)
+    simu=Simulacion(720,12,8)
     suma+=simu[0]
-    print(simu)
+    print("Promedio de espera simulación ",i,": ",simu[0],"\nPorcentaje de ocupación cajas normales: ",i,": ",simu[1],
+          "\nPorcentaje de ocupación cajas rápidas: ",i,": ",simu[2])
 
 final_time = time.time()
 
-print(suma/10)
+print("Promedio de espera total:",suma/10)
 print(final_time-initial_time)
-
-#Falta modificar inputs de la funcion Simulacion
-#Falta arreglar tasas de atencion y crear un sistema de diferenciación entre cajas rapidas y normales
