@@ -82,12 +82,19 @@ def simular_tiempo_compra():
 
     elif prob_tiempo_compra >0.15:
         tiempo_compra = rd.normalvariate(14.68, 7.86)
-        if tiempo_compra < 0:
-            tiempo_compra=0
+    
+    if tiempo_compra < 0:
+        tiempo_compra=np.abs(tiempo_compra)
 
     return tiempo_compra
 
-
+def escoge_caja_rapida_o_normal():
+    prob_eleccion = rd.random()
+    if prob_eleccion <= 0.4:
+        eleccion = "caja_rapida"
+    elif prob_eleccion > 0.4:
+        eleccion = "caja_normal"
+    return eleccion
 
 def Simulacion(a,b,c,Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas):
     T = 0 # Reloj
