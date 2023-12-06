@@ -28,7 +28,16 @@ class Supermercado:
             caja=Caja(i,True)
             cajas.append(caja)
         return cajas
-        
+    
+
+
+
+class Intervalo:
+    
+    def __init__(self,tiempo_inicio,tiempo_final):
+        self.tiempo_inicio = tiempo_inicio
+        self.tiempo_final = tiempo_final
+        self.tiempos_de_espera = []
 
 class Persona:
     
@@ -60,20 +69,21 @@ def ExponentialInstance(lambd):
     return -np.log(1 - u) / lambd
 
 
-# def taylor_serie(x):  #Taylor Día completo
-#         y = 4.833468511100568e-61 * (x - 368.0)**25 + 1.104321097541718e-59 * (x - 368.0)**24 + -6.764502240882454e-55 * (x - 368.0)**23 + -1.164401773589306e-53 * (x - 368.0)**22 + 4.1460818454159185e-49 * (x - 368.0)**21 + 4.667870353711148e-48 * (x - 368.0)**20 + -1.4659596525009974e-43 * (x - 368.0)**19 + -7.746370031433263e-43 * (x - 368.0)**18 + 3.3167058552077726e-38 * (x - 368.0)**17 + -5.671961723527083e-39 * (x - 368.0)**16 + -5.037697259426038e-33 * (x - 368.0)**15 + 2.1449400770960893e-32 * (x - 368.0)**14 + 5.246041343119162e-28 * (x - 368.0)**13 + -3.0614021619992635e-27 * (x - 368.0)**12 + -3.758438093424414e-23 * (x - 368.0)**11 + 1.4169551592324059e-22 * (x - 368.0)**10 + 1.8287770822228958e-18 * (x - 368.0)**9 + 4.140212800064939e-18 * (x - 368.0)**8 + -5.834669245448097e-14 * (x - 368.0)**7 + -6.155984615892722e-13 * (x - 368.0)**6 + 1.1341045785547847e-09 * (x - 368.0)**5 + 1.884961111267024e-08 * (x - 368.0)**4 + -1.1601179506002755e-05 * (x - 368.0)**3 + -0.00019698650221112288 * (x - 368.0)**2 + 0.04565345572605308 * (x - 368.0)**1 + 6.0506699555558985 * (x - 368.0)**0
-#         return y
+def taylor_serie(x):  #Taylor Día completo
+    y = 4.833468511100568e-61 * (x - 368.0)**25 + 1.104321097541718e-59 * (x - 368.0)**24 + -6.764502240882454e-55 * (x - 368.0)**23 + -1.164401773589306e-53 * (x - 368.0)**22 + 4.1460818454159185e-49 * (x - 368.0)**21 + 4.667870353711148e-48 * (x - 368.0)**20 + -1.4659596525009974e-43 * (x - 368.0)**19 + -7.746370031433263e-43 * (x - 368.0)**18 + 3.3167058552077726e-38 * (x - 368.0)**17 + -5.671961723527083e-39 * (x - 368.0)**16 + -5.037697259426038e-33 * (x - 368.0)**15 + 2.1449400770960893e-32 * (x - 368.0)**14 + 5.246041343119162e-28 * (x - 368.0)**13 + -3.0614021619992635e-27 * (x - 368.0)**12 + -3.758438093424414e-23 * (x - 368.0)**11 + 1.4169551592324059e-22 * (x - 368.0)**10 + 1.8287770822228958e-18 * (x - 368.0)**9 + 4.140212800064939e-18 * (x - 368.0)**8 + -5.834669245448097e-14 * (x - 368.0)**7 + -6.155984615892722e-13 * (x - 368.0)**6 + 1.1341045785547847e-09 * (x - 368.0)**5 + 1.884961111267024e-08 * (x - 368.0)**4 + -1.1601179506002755e-05 * (x - 368.0)**3 + -0.00019698650221112288 * (x - 368.0)**2 + 0.04565345572605308 * (x - 368.0)**1 + 6.0506699555558985 * (x - 368.0)**0
+    return y
 
 #6.992949261062695 #Tasa max Día completo
 
-def taylor_serie(x):    #Taylor de 12:50 a 15:00
-    y = -1.52376276542353e-82 * (x - 4800.0)**20 + -1.2931581044293425e-78 * (x - 4800.0)**19 + -7.00808257807493e-75 * (x - 4800.0)**18 + 4.111209901067969e-71 * (x - 4800.0)**17 + 2.219064059920795e-66 * (x - 
-4800.0)**16 + 4.7104589446191605e-62 * (x - 4800.0)**15 + 7.835326579048999e-58 * (x - 4800.0)**14 + 1.0068344086441171e-53 * (x - 4800.0)**13 + 1.1247020764670005e-49 * (x - 4800.0)**12 + 1.8278877760677984e-46 * (x - 4800.0)**11 + -5.588726612225112e-42 * (x - 4800.0)**10 + -6.543255429683764e-37 * (x - 4800.0)**9 + -1.8340246083850404e-33 * (x - 4800.0)**8 + -2.155225116442326e-28 * (x - 4800.0)**7 + 4.3656108445878755e-24 * (x - 4800.0)**6 + -5.015060681829637e-21 * (x - 4800.0)**5 + -2.0041607724575117e-16 * (x - 4800.0)**4 + 7.228088186884462e-13 * (x - 4800.0)**3 + 2.014061532911628e-09 * (x - 4800.0)**2 + -1.001818337280383e-05 * (x - 4800.0)**1 + 0.0812096793456032 * (x - 4800.0)**0
-    return y
+# def taylor_serie(x):    #Taylor de 12:50 a 15:00
+#    y = -3.34267085727602e-45 * (x - 80.0)**20 + -4.727990917833113e-43 * (x - 80.0)**19 + -4.2704433777491045e-41 * (x - 80.0)**18 + 4.1753429940496695e-39 * (x - 80.0)**17 + 3.7561341628322776e-36 * (x - 80.0)**16 + 1.3288722397325895e-33 * (x - 80.0)**15 + 3.6840529067170416e-31 * (x - 80.0)**14 + 7.889973681646902e-29 * (x - 80.0)**13 + 1.4689389679892442e-26 * (x - 80.0)**12 + 3.9789138231363445e-25 * (x - 80.0)**11 + -2.027573561703069e-22 * (x - 80.0)**10 + -3.9564563442411497e-19 * (x - 80.0)**9 + -1.8482742459819104e-17 * (x - 80.0)**8 + -3.619950589177593e-14 * (x - 80.0)**7 + 1.2220916373902645e-11 * (x - 80.0)**6 + -2.339826711713704e-10 * (x - 80.0)**5 + -1.558435416662692e-07 * (x - 80.0)**4 + 9.367602290200922e-06 * (x - 80.0)**3 + 0.0004350372911088983 * (x - 80.0)**2 + -0.03606546014209252 * (x - 80.0)**1 + 4.872580760736155 * (x - 80.0)**0
+#    return y
+
+# 6.099 #Tasa 12:50 a 15:00
 
 def generar_llegada(T):
     aceptar=False
-    tasa_maxima= 6.099  #Poner tasa de día completo o de 12:50 a 15:00
+    tasa_maxima= 6.992949261062695  #Poner tasa de día completo o de 12:50 a 15:00
     while aceptar == False:
         tiempo_llegada_persona= ExponentialInstance(tasa_maxima) + T
         prob_rechazar = 1 - (taylor_serie(tiempo_llegada_persona)/tasa_maxima)
@@ -107,9 +117,22 @@ def escoge_caja_rapida_o_normal():
         eleccion = "caja_normal"
     return eleccion
 
-def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas):
+def create_intervalos_temporales(numb_intervalos):
+    intervalos=[]
+    for i in range(numb_intervalos):
+        inicio=int(input("Ingrese inicio del intervalo "+str(i)+":"))
+        final=int(input("Ingrese final del intervalo "+str(i)+":"))
+        intervalo=Intervalo(inicio,final)
+        intervalos.append(intervalo)
+
+    return intervalos
+
+def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantidad_intervalos_temporales):
     T = 0 # Reloj
     Stop=False
+
+    for i in range(len(intervalos)):
+        intervalos[i].tiempos_de_espera=[] #Reseteo a vacío las listas que guardan los tiempos de espera por intervalos
 
     supermercado = Supermercado(Tfin,cantidad_de_cajas_normales,cantidad_de_cajas_rapidas)    #Creo supermercado
     indice_persona=0
@@ -121,6 +144,7 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas):
     ESTOT=0 #Variable auxiliar guardadora de tiempos de espera
     Porcentaje_sumado_cajas_normales=0 #Variable auxiliar guardadora de porcentajes de ocupación cajas normales
     Porcentaje_sumado_cajas_rapidas=0   #Variable auxiliar guardadora de porcentajes de ocupación cajas rápidas
+    Promedios_por_intervalos=[] #Lista que guarda promedios de espera de cada intervalo
 
 
     while (Stop==False): #condición de stop
@@ -302,26 +326,46 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas):
         
         if supermercado.Hora_de_cierre < T and supermercado.Personas_que_quedan==0: #Condición de stop
             Stop=True
-  
-    for i in range(len(supermercado.personas)):
+
+#Orden de outputs obtenidos
+    for i in range(len(supermercado.personas)): #Calculamos promedio total de espera
         ESTOT += supermercado.personas[i].tiempo_total_en_cola
-    for i in range(len(supermercado.cajas)):
+    for i in range(len(supermercado.cajas)):    #Calculamos promedio total de porcentaje de ocupación de cajas normales
         Porcentaje_sumado_cajas_normales += supermercado.cajas[i].tiempo_de_uso*100/T
-    for i in range(len(supermercado.cajas_rapidas)):
+    for i in range(len(supermercado.cajas_rapidas)):    #Calculamos promedio total de porcentaje de ocupación de cajas rápidas
         Porcentaje_sumado_cajas_rapidas += supermercado.cajas_rapidas[i].tiempo_de_uso*100/T
+    
+    if cantidad_intervalos_temporales > 0:  #Si es que hay intervalos
+        for i in range(cantidad_intervalos_temporales):    #Para cada intervalo temporal
+            personas_en_ese_intervalo=0
+            for a in range(supermercado.Personas_totales): #Para cada persona, reviso si pertenece a ese intervalo temporal
+                tiempo_en_la_mitad_de_su_espera_en_cola=(2*(supermercado.personas[a].hora_que_entra_en_cola)+supermercado.personas[a].tiempo_total_en_cola)/2
+
+                if  tiempo_en_la_mitad_de_su_espera_en_cola >= intervalos[i].tiempo_inicio and tiempo_en_la_mitad_de_su_espera_en_cola < intervalos[i].tiempo_final:
+                    
+                    intervalos[i].tiempos_de_espera.append(supermercado.personas[a].tiempo_total_en_cola)
+                    personas_en_ese_intervalo+=1
+
+            Promedios_por_intervalos.append(sum(intervalos[i].tiempos_de_espera)/personas_en_ese_intervalo)
+
     return [(ESTOT/supermercado.Personas_totales),(Porcentaje_sumado_cajas_normales/len(supermercado.cajas)),
-            (Porcentaje_sumado_cajas_rapidas/len(supermercado.cajas_rapidas))] #Calculamos promedio de espera y promedio de porcentaje de ocupación
+            (Porcentaje_sumado_cajas_rapidas/len(supermercado.cajas_rapidas)),(Promedios_por_intervalos)] #Returneamos estos promedios
 
 
 if __name__ == '__main__':
 
     #Decisiones
-    Tiempo_simulación=160
+    Tiempo_simulación=720 #Para día completo: 720, Para 12:50 a 15:00: 160
     Cajas_normales=12
     Cajas_rapidas=8
+    intervalos_temporales=10
 
-    iteraciones=10
+    iteraciones=1000
+    
 
+    #Creación intervalos temporales
+    if intervalos_temporales>0:
+        intervalos = create_intervalos_temporales(intervalos_temporales)
     # Archivo
     path = 'simulation.txt'
     file = open(path, 'w', encoding='utf-8')
@@ -331,25 +375,29 @@ if __name__ == '__main__':
     suma1=0
     suma2=0
     suma3=0
+    suma4=[0] * intervalos_temporales
     for i in range(iteraciones):
-        simu=Simulacion(Tiempo_simulación,Cajas_normales,Cajas_rapidas)
+        simu=Simulacion(Tiempo_simulación,Cajas_normales,Cajas_rapidas,intervalos_temporales)
         suma1+=simu[0]
         suma2+=simu[1]
         suma3+=simu[2]
+        suma4 = [a + b for a, b in zip(simu[3], suma4)]
 
-        line = f"Promedio de espera simulación {i} : {simu[0]} \nPorcentaje de ocupación cajas normales {i} : {simu[1]} \nPorcentaje de ocupación cajas rápidas {i} : {simu[2]}\n\n"
+        line = f"Promedio de espera simulación {i} : {simu[0]} \nPorcentaje de ocupación cajas normales {i} : {simu[1]} \nPorcentaje de ocupación cajas rápidas {i} : {simu[2]} \nPromedio de espera por intervalo{i} : {simu[3]} \n\n"
         file.write(line)
 
         print("Promedio de espera simulación",i,":",simu[0],"\nPorcentaje de ocupación cajas normales",i,": ",simu[1],
-            "\nPorcentaje de ocupación cajas rápidas",i,": ",simu[2])
+            "\nPorcentaje de ocupación cajas rápidas",i,": ",simu[2],
+            "\nPromedio de espera por intervalo",i,": ",simu[3])
 
     final_time = time.time()
 
-    line = f"\n----------------\nPromedio de espera total: {suma1/iteraciones} minutos\nPromedio ocupación de cajas normales total: {suma2/iteraciones} %\nPromedio ocupación de cajas rápidas total: {suma3/iteraciones} %"
+    line = f"\n----------------\nPromedio de espera total: {suma1/iteraciones} minutos\nPromedio ocupación de cajas normales total: {suma2/iteraciones} %\nPromedio ocupación de cajas rápidas total: {suma3/iteraciones} % \nPromedio espera por intervalos: {[elemento / iteraciones for elemento in suma4]} minutos"
     file.write(line)
     
     print("\n----------------\nPromedio de espera total:",suma1/iteraciones,"minutos\nPromedio ocupación de cajas normales total:",suma2/iteraciones,
-        "%\nPromedio ocupación de cajas rápidas total:",suma3/iteraciones,"%")
+        "%\nPromedio ocupación de cajas rápidas total:",suma3/iteraciones,
+        "%\nPromedio espera por intervalos:",[elemento / iteraciones for elemento in suma4],"minutos")
     print("\n----------------\nTiempo total de ejecución:",final_time-initial_time,"segundos")
 
     file.close()
