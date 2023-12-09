@@ -1,0 +1,8 @@
+----------------
+Promedio de espera total: 18.232264365848458 minutos
+Promedio ocupación de cajas normales total: 96.06136731996948 %
+Promedio ocupación de cajas rápidas total: 54.41484159746486 %
+Promedio espera por intervalos: [2.5378229101373133, 6.202080831933811, 11.354479585416918, 16.824402975649306, 22.01134486815217, 27.687382893549426, 32.94998398714414, 38.41995301612132, 43.934651185556554, 49.09966280627762] minutos
+
+----------------
+Tiempo total de ejecución: 15122.44117641449 segundos
