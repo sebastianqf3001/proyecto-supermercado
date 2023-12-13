@@ -39,6 +39,14 @@ class Intervalo:
         self.tiempo_final = tiempo_final
         self.tiempos_de_espera = []
 
+class Apertura_de_cajas_clase:
+        
+        def __init__(self,tiempo_apertura,cantidad):
+            self.tiempo_apertura = tiempo_apertura
+            self.cantidad = cantidad
+            self.ya_se_utilizo = False
+
+
 class Persona:
     
     def __init__(self, llegada, indice):
@@ -127,12 +135,26 @@ def create_intervalos_temporales(numb_intervalos):
 
     return intervalos
 
-def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantidad_intervalos_temporales):
+def create_veces_que_se_abren_cajas(numb_abren_cajas):
+    apertura_de_cajas=[]
+    for i in range(numb_abren_cajas):
+        Hora_apertura=int(input("Ingrese a que hora quiere abrir cajas "+str(i)+":"))
+        cuantas=int(input("Ingrese cuantas quiere abrir "+str(i)+":"))
+        apertura=Apertura_de_cajas_clase(Hora_apertura,cuantas)
+        apertura_de_cajas.append(apertura)
+
+    return apertura_de_cajas
+
+
+def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantidad_intervalos_temporales, veces_que_se_abre_cajas):
     T = 0 # Reloj
     Stop=False
 
     for i in range(len(intervalos)):
         intervalos[i].tiempos_de_espera=[] #Reseteo a vacío las listas que guardan los tiempos de espera por intervalos
+
+    for i in range(len(apertura_de_cajas)):
+        apertura_de_cajas[i].ya_se_utilizo=False    #Reseteo a que aun no se abre ninguna caja extra
 
     supermercado = Supermercado(Tfin,cantidad_de_cajas_normales,cantidad_de_cajas_rapidas)    #Creo supermercado
     indice_persona=0
@@ -148,6 +170,13 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
 
 
     while (Stop==False): #condición de stop
+        for i in range(veces_que_se_abre_cajas):
+            if T>=apertura_de_cajas[i].tiempo_apertura and apertura_de_cajas[i].ya_se_utilizo==False:
+                for a in range(apertura_de_cajas[i].cantidad):
+                    supermercado.cajas.append(Caja(len(supermercado.cajas),False))
+                apertura_de_cajas[i].ya_se_utilizo=True
+
+
         Horas_de_compras_totales=[]
         Horas_de_atencion_totales=[]
         
@@ -326,7 +355,7 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
         
         if supermercado.Hora_de_cierre < T and supermercado.Personas_que_quedan==0: #Condición de stop
             Stop=True
-
+        
 #Orden de outputs obtenidos
     for i in range(len(supermercado.personas)): #Calculamos promedio total de espera
         ESTOT += supermercado.personas[i].tiempo_total_en_cola
@@ -358,9 +387,10 @@ if __name__ == '__main__':
 
     #Decisiones
     Tiempo_simulación=720 #Para día completo: 720, Para 12:50 a 15:00: 160
-    Cajas_normales=15
+    Cajas_normales=12
     Cajas_rapidas=8
     intervalos_temporales=3
+    veces_que_se_abren_cajas=0
 
     iteraciones=30
     
@@ -368,6 +398,13 @@ if __name__ == '__main__':
     #Creación intervalos temporales
     if intervalos_temporales>0:
         intervalos = create_intervalos_temporales(intervalos_temporales)
+    else:
+        intervalos=[]
+    #Creación veces que se abre cajas:
+    if veces_que_se_abren_cajas>0:
+        apertura_de_cajas = create_veces_que_se_abren_cajas(veces_que_se_abren_cajas)
+    else:
+        apertura_de_cajas=[]
     # Archivo
     path = 'simulation.txt'
     file = open(path, 'w', encoding='utf-8')
@@ -379,7 +416,7 @@ if __name__ == '__main__':
     suma3=0
     suma4=[0] * intervalos_temporales
     for i in range(iteraciones):
-        simu=Simulacion(Tiempo_simulación,Cajas_normales,Cajas_rapidas,intervalos_temporales)
+        simu=Simulacion(Tiempo_simulación,Cajas_normales,Cajas_rapidas,intervalos_temporales,veces_que_se_abren_cajas)
         suma1+=simu[0]
         suma2+=simu[1]
         suma3+=simu[2]
@@ -403,6 +440,10 @@ if __name__ == '__main__':
     print("\n----------------\nTiempo total de ejecución:",final_time-initial_time,"segundos")
 
     file.close()
+
+
+
+    #AJUSTAR PORCENTAJE DE OCUPACIÓN DE CAJAS QUE SE ABREN DESPUÉS
 
     #1Preguntarle al gerente cómo dividen un día (a que hora cierran y abren cajas?)(Si no funciona hablando con el gerente, verlo por mi propia cuenta)
     #2Hacer los intervalos en el modelo
