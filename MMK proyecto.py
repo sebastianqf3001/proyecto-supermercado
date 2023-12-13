@@ -46,6 +46,12 @@ class Apertura_de_cajas_clase:
             self.cantidad = cantidad
             self.ya_se_utilizo = False
 
+class Cierre_de_cajas_clase:
+        
+        def __init__(self,tiempo_cierre,cantidad):
+            self.tiempo_cierre = tiempo_cierre
+            self.cantidad = cantidad
+            self.ya_se_utilizo = False
 
 class Persona:
     
@@ -66,6 +72,7 @@ class Caja:
     def __init__(self, indice, tipo):
         self.indice_de_caja = indice
         self.Ocupada = False
+        self.Cerrada = False
         self.persona_siendo_atendida = -1   #Aquí va el índice de la persona
         self.Cola = 0
         self.orden_de_clientes_en_cola=[] #Aquí va el índice de la persona
@@ -145,8 +152,17 @@ def create_veces_que_se_abren_cajas(numb_abren_cajas):
 
     return apertura_de_cajas
 
+def create_veces_que_se_cierran_cajas(numb_cierran_cajas):
+    cierre_de_cajas=[]
+    for i in range(numb_cierran_cajas):
+        Hora_cierre=int(input("Ingrese a que hora quiere cerrar cajas "+str(i)+":"))
+        cuantas=int(input("Ingrese cuantas quiere cerrar "+str(i)+":"))
+        cierre=Cierre_de_cajas_clase(Hora_cierre,cuantas)
+        cierre_de_cajas.append(cierre)
+    
+    return cierre_de_cajas
 
-def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantidad_intervalos_temporales, veces_que_se_abre_cajas):
+def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantidad_intervalos_temporales, veces_que_se_abre_cajas, veces_que_se_cierra_cajas):
     T = 0 # Reloj
     Stop=False
 
@@ -155,6 +171,9 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
 
     for i in range(len(apertura_de_cajas)):
         apertura_de_cajas[i].ya_se_utilizo=False    #Reseteo a que aun no se abre ninguna caja extra
+    
+    for i in range(len(cierre_de_cajas)):
+        cierre_de_cajas[i].ya_se_utilizo=False    #Reseteo a que aun no se abre ninguna caja extra
 
     supermercado = Supermercado(Tfin,cantidad_de_cajas_normales,cantidad_de_cajas_rapidas)    #Creo supermercado
     indice_persona=0
@@ -170,11 +189,34 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
 
 
     while (Stop==False): #condición de stop
-        for i in range(veces_que_se_abre_cajas):
+        for i in range(veces_que_se_abre_cajas):    #Revisamos si es hora de abrir cajas
             if T>=apertura_de_cajas[i].tiempo_apertura and apertura_de_cajas[i].ya_se_utilizo==False:
-                for a in range(apertura_de_cajas[i].cantidad):
-                    supermercado.cajas.append(Caja(len(supermercado.cajas),False))
-                apertura_de_cajas[i].ya_se_utilizo=True
+                Hay_alguna_caja_cerrada=False
+                for a in range(len(supermercado.cajas)):
+                    if supermercado.cajas[a].Cerrada==True:
+                        Hay_alguna_caja_cerrada=True
+                if Hay_alguna_caja_cerrada==False:
+                    for a in range(apertura_de_cajas[i].cantidad):
+                        supermercado.cajas.append(Caja(len(supermercado.cajas),False))
+                    apertura_de_cajas[i].ya_se_utilizo=True
+                elif Hay_alguna_caja_cerrada==True:
+                    for a in range(apertura_de_cajas[i].cantidad):
+                        caja_menor_indice = 0
+                        while supermercado.cajas[caja_menor_indice].Cerrada == False:
+                            caja_menor_indice+=1
+                        supermercado.cajas[caja_menor_indice].Cerrada = False
+                    apertura_de_cajas[i].ya_se_utilizo=True
+        
+        for i in range(veces_que_se_cierra_cajas):    #Revisamos si es hora de cerrar cajas
+            if T>=cierre_de_cajas[i].tiempo_cierre and cierre_de_cajas[i].ya_se_utilizo==False:
+                for a in range(cierre_de_cajas[i].cantidad):
+                    caja_mayor_indice = supermercado.cajas[-(a+1)].indice_de_caja
+                    while supermercado.cajas[caja_mayor_indice].Cerrada == True:
+                        caja_mayor_indice -=1
+
+                    supermercado.cajas[caja_mayor_indice].Cerrada = True
+                
+                cierre_de_cajas[i].ya_se_utilizo=True
 
 
         Horas_de_compras_totales=[]
@@ -205,7 +247,7 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
                 Hay_alguna_caja_desocupada = False  #Verifico si es que hay alguna caja desocupada
                 cajas_desocupadas = []    
                 for i in range(len(supermercado.cajas)):    
-                    if supermercado.cajas[i].Ocupada == False:
+                    if supermercado.cajas[i].Ocupada == False and supermercado.cajas[i].Cerrada == False:
                         Hay_alguna_caja_desocupada = True
                         cajas_desocupadas.append(supermercado.cajas[i].indice_de_caja)
 
@@ -226,12 +268,12 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
                     
                     fila_menor = np.inf
                     for i in range(len(supermercado.cajas)):    #Busco entre todas las cajas la menor fila
-                        if supermercado.cajas[i].Cola < fila_menor:
+                        if supermercado.cajas[i].Cola < fila_menor and supermercado.cajas[i].Cerrada == False:
                             fila_menor=supermercado.cajas[i].Cola
 
                     cajas_de_menor_fila=[]
                     for i in range(len(supermercado.cajas)): #Busco entre todas las cajas las que tengan esta menor fila
-                        if supermercado.cajas[i].Cola == fila_menor:
+                        if supermercado.cajas[i].Cola == fila_menor and supermercado.cajas[i].Cerrada == False:
                             cajas_de_menor_fila.append(supermercado.cajas[i].indice_de_caja)
 
                     caja_escogida = cajas_de_menor_fila[rd.randint(0, len(cajas_de_menor_fila)-1)]  #Escojo una caja entre todas las que tengan menor fila
@@ -355,7 +397,10 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
         
         if supermercado.Hora_de_cierre < T and supermercado.Personas_que_quedan==0: #Condición de stop
             Stop=True
-        
+        print("Caja 10",T, supermercado.cajas[-1].Cerrada, supermercado.cajas[-1].Cola)
+        print("Caja 9",T, supermercado.cajas[-2].Cerrada, supermercado.cajas[-2].Cola)
+        print("Caja 8",T, supermercado.cajas[-3].Cerrada, supermercado.cajas[-3].Cola)
+        print("Cantidad de cajas",T, len(supermercado.cajas))
 #Orden de outputs obtenidos
     for i in range(len(supermercado.personas)): #Calculamos promedio total de espera
         ESTOT += supermercado.personas[i].tiempo_total_en_cola
@@ -387,10 +432,11 @@ if __name__ == '__main__':
 
     #Decisiones
     Tiempo_simulación=720 #Para día completo: 720, Para 12:50 a 15:00: 160
-    Cajas_normales=12
+    Cajas_normales=10
     Cajas_rapidas=8
-    intervalos_temporales=3
-    veces_que_se_abren_cajas=0
+    intervalos_temporales=0
+    veces_que_se_abren_cajas=2
+    veces_que_se_cierran_cajas=1
 
     iteraciones=30
     
@@ -405,6 +451,11 @@ if __name__ == '__main__':
         apertura_de_cajas = create_veces_que_se_abren_cajas(veces_que_se_abren_cajas)
     else:
         apertura_de_cajas=[]
+    #Creación veces que se cierra cajas:
+    if veces_que_se_cierran_cajas>0:
+        cierre_de_cajas = create_veces_que_se_cierran_cajas(veces_que_se_cierran_cajas)
+    else:
+        cierre_de_cajas=[]
     # Archivo
     path = 'simulation.txt'
     file = open(path, 'w', encoding='utf-8')
@@ -416,7 +467,7 @@ if __name__ == '__main__':
     suma3=0
     suma4=[0] * intervalos_temporales
     for i in range(iteraciones):
-        simu=Simulacion(Tiempo_simulación,Cajas_normales,Cajas_rapidas,intervalos_temporales,veces_que_se_abren_cajas)
+        simu=Simulacion(Tiempo_simulación,Cajas_normales,Cajas_rapidas,intervalos_temporales,veces_que_se_abren_cajas,veces_que_se_cierran_cajas)
         suma1+=simu[0]
         suma2+=simu[1]
         suma3+=simu[2]
@@ -446,5 +497,4 @@ if __name__ == '__main__':
     #AJUSTAR PORCENTAJE DE OCUPACIÓN DE CAJAS QUE SE ABREN DESPUÉS
 
     #1Preguntarle al gerente cómo dividen un día (a que hora cierran y abren cajas?)(Si no funciona hablando con el gerente, verlo por mi propia cuenta)
-    #2Hacer los intervalos en el modelo
-    #3Abrir y cerrar cajas
+    #3cerrar cajas
