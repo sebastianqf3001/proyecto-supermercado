@@ -111,9 +111,9 @@ def simular_tiempo_compra():
 
 def escoge_caja_rapida_o_normal():
     prob_eleccion = rd.random()
-    if prob_eleccion <= 0.4:
+    if prob_eleccion <= 0:
         eleccion = "caja_rapida"
-    elif prob_eleccion > 0.4:
+    elif prob_eleccion > 0:
         eleccion = "caja_normal"
     return eleccion
 
@@ -137,7 +137,7 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
     supermercado = Supermercado(Tfin,cantidad_de_cajas_normales,cantidad_de_cajas_rapidas)    #Creo supermercado
     indice_persona=0
     
-    TP1 = generar_llegada(T) # llegada de cliente 1
+    TP1 = ExponentialInstance(3) # llegada de cliente 1
     TP2 = np.inf # compra de cliente 1
     TP3 = np.inf # atencion de cliente 1
 
@@ -156,10 +156,10 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
             T=TP1   #Tiempo se actualiza a tiempo de llegada del cliente.
             persona=Persona(T, indice_persona)   #Se crea la persona que llega con el índice correspondiente
             indice_persona+=1
-            persona.hora_de_compra = T + simular_tiempo_compra() #Se crea un tiempo de compra para la persona que llegó
+            persona.hora_de_compra = T + ExponentialInstance(1/15) #Se crea un tiempo de compra para la persona que llegó
             supermercado.personas.append(persona)    #Se agrega esa persona al supermercado
             supermercado.Personas_totales += 1    #Se cuenta esa persona
-            TP1 = T + generar_llegada(T) #Se actualiza la llegada del siguiente cliente
+            TP1 = T + ExponentialInstance(3) #Se actualiza la llegada del siguiente cliente
 
 
 
@@ -183,7 +183,7 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
                 
                 if Hay_alguna_caja_desocupada==True:    #Si es que había una caja desocupada
 
-                    Tiempo_que_durara_esta_atencion= rd.lognormvariate(0.97,0.57)  #Creo un tiempo que durará esta atención caja normal
+                    Tiempo_que_durara_esta_atencion= ExponentialInstance(1/5)  #Creo un tiempo que durará esta atención caja normal
 
                     caja_escogida = cajas_desocupadas[rd.randint(0, len(cajas_desocupadas)-1)]    #Escojo una caja random entre las que estaban desocupadas
                     supermercado.cajas[caja_escogida].Ocupada = True    #La caja escogida se está ocupando ahora
@@ -259,7 +259,7 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
                     supermercado.cajas[caja_atendiendo].orden_de_clientes_en_cola=supermercado.cajas[caja_atendiendo].orden_de_clientes_en_cola[1:] #Elimino a esta persona de la fila
                     supermercado.cajas[caja_atendiendo].Cola -= 1   #Quito del contador de la cola a una persona 
 
-                    Tiempo_que_durara_esta_atencion = rd.lognormvariate(0.97,0.57)  #Creo un tiempo que durará esta atención de esta nueva persona
+                    Tiempo_que_durara_esta_atencion = ExponentialInstance(1/5)  #Creo un tiempo que durará esta atención de esta nueva persona
 
                     supermercado.cajas[caja_atendiendo].persona_siendo_atendida = persona_que_iba_despues_de_la_que_acaba_de_ser_atendida   #Actualizo la persona que esta siendo atendida ahora   
                     supermercado.cajas[caja_atendiendo].tiempo_de_uso += Tiempo_que_durara_esta_atencion    #Agrego tiempo de uso a la caja
@@ -339,17 +339,26 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
         for i in range(cantidad_intervalos_temporales):    #Para cada intervalo temporal
             personas_en_ese_intervalo=0
             for a in range(supermercado.Personas_totales): #Para cada persona, reviso si pertenece a ese intervalo temporal
-                if supermercado.personas[a].hora_que_entra_en_cola == np.inf: #Además, reviso si es que existe su tiempo que inicio una cola, ya que si no entró a una cola, no tendrá uno
+                
+                if supermercado.personas[a].hora_que_entra_en_cola == np.inf:
                     supermercado.personas[a].hora_que_entra_en_cola = supermercado.personas[a].hora_de_compra
+
+                
                 tiempo_en_la_mitad_de_su_espera_en_cola=(2*(supermercado.personas[a].hora_que_entra_en_cola)+supermercado.personas[a].tiempo_total_en_cola)/2
+
+                
 
                 if  tiempo_en_la_mitad_de_su_espera_en_cola >= intervalos[i].tiempo_inicio and tiempo_en_la_mitad_de_su_espera_en_cola < intervalos[i].tiempo_final:
                     
                     intervalos[i].tiempos_de_espera.append(supermercado.personas[a].tiempo_total_en_cola)
                     personas_en_ese_intervalo+=1
 
-            Promedios_por_intervalos.append(sum(intervalos[i].tiempos_de_espera)/personas_en_ese_intervalo)
+                    
 
+            Promedios_por_intervalos.append(sum(intervalos[i].tiempos_de_espera)/personas_en_ese_intervalo)
+            print(personas_en_ese_intervalo)
+
+    print(supermercado.Personas_totales)        
     return [(ESTOT/supermercado.Personas_totales),(Porcentaje_sumado_cajas_normales/len(supermercado.cajas)),
             (Porcentaje_sumado_cajas_rapidas/len(supermercado.cajas_rapidas)),(Promedios_por_intervalos)] #Returneamos estos promedios
 
@@ -357,10 +366,10 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
 if __name__ == '__main__':
 
     #Decisiones
-    Tiempo_simulación=720 #Para día completo: 720, Para 12:50 a 15:00: 160
-    Cajas_normales=15
-    Cajas_rapidas=8
-    intervalos_temporales=3
+    Tiempo_simulación=840 #Para día completo: 720, Para 12:50 a 15:00: 160
+    Cajas_normales=16
+    Cajas_rapidas=1
+    intervalos_temporales=1
 
     iteraciones=30
     
