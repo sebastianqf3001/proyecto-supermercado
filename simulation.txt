@@ -1,156 +1,19 @@
-Promedio de espera simulación 0 : 0.48666189209368316 
-Porcentaje de ocupación cajas normales 0 : 80.94071107636357 
-Porcentaje de ocupación cajas rápidas 0 : 61.12964197768397 
-Promedio de espera por intervalo0 : [0.5960901710386506, 0.3330905685992561, 0.48574214265491233] 
+Promedio de espera simulación 0 : 2631.9503679468908 
+Porcentaje de ocupación cajas normales 0 : 99.43029894036832 
+Porcentaje de ocupación cajas rápidas 0 : 4.634761490404449 
+Promedio de espera por intervalo0 : [10.615064948576768, 50.41283740897187, 110.97440980461856, 3901.372492714597] 
+Porcentaje ocupación por intervalos: [91.08284364968802, 99.50248756218907, 99.50248756218907, 99.51952811868767] % 
 
-Promedio de espera simulación 1 : 0.5257320502473658 
-Porcentaje de ocupación cajas normales 1 : 81.67291675347096 
-Porcentaje de ocupación cajas rápidas 1 : 53.49375017104832 
-Promedio de espera por intervalo1 : [0.44425767671737865, 0.48872640510880017, 0.5910044487251922] 
-
-Promedio de espera simulación 2 : 0.4861455021373742 
-Porcentaje de ocupación cajas normales 2 : 79.37588148175513 
-Porcentaje de ocupación cajas rápidas 2 : 58.81552385874262 
-Promedio de espera por intervalo2 : [0.4750873145164217, 0.2174390948889837, 0.6105385739762511] 
-
-Promedio de espera simulación 3 : 0.46567120394400774 
-Porcentaje de ocupación cajas normales 3 : 80.52107214181981 
-Porcentaje de ocupación cajas rápidas 3 : 56.83600484870185 
-Promedio de espera por intervalo3 : [0.3173618290518902, 0.5022898588942772, 0.5322608874048478] 
-
-Promedio de espera simulación 4 : 0.42816636208269343 
-Porcentaje de ocupación cajas normales 4 : 79.16853633879317 
-Porcentaje de ocupación cajas rápidas 4 : 56.96775518534261 
-Promedio de espera por intervalo4 : [0.41462111128074153, 0.6073208154968788, 0.35214871919387997] 
-
-Promedio de espera simulación 5 : 0.5530137162457185 
-Porcentaje de ocupación cajas normales 5 : 78.90285943837709 
-Porcentaje de ocupación cajas rápidas 5 : 57.62248586650648 
-Promedio de espera por intervalo5 : [0.5546431819739137, 0.8866577615315665, 0.4023994081174269] 
-
-Promedio de espera simulación 6 : 0.48128212717574687 
-Porcentaje de ocupación cajas normales 6 : 78.50789481671949 
-Porcentaje de ocupación cajas rápidas 6 : 58.58867730739194 
-Promedio de espera por intervalo6 : [0.5151151204708028, 0.6071997519482083, 0.4051566638979457] 
-
-Promedio de espera simulación 7 : 0.7554684864233076 
-Porcentaje de ocupación cajas normales 7 : 82.57300516913378 
-Porcentaje de ocupación cajas rápidas 7 : 56.327736426202584 
-Promedio de espera por intervalo7 : [0.528607371529341, 0.7284849178882259, 0.9015204486029471] 
-
-Promedio de espera simulación 8 : 0.48875005615022765 
-Porcentaje de ocupación cajas normales 8 : 80.24420978568612 
-Porcentaje de ocupación cajas rápidas 8 : 58.92689134419487 
-Promedio de espera por intervalo8 : [0.5161074300592584, 0.6576251157696109, 0.3908705658299308] 
-
-Promedio de espera simulación 9 : 0.3452224064991199 
-Porcentaje de ocupación cajas normales 9 : 76.94539466349327 
-Porcentaje de ocupación cajas rápidas 9 : 54.900247373735894 
-Promedio de espera por intervalo9 : [0.4816491104451392, 0.2285947911135061, 0.3169326046538815] 
-
-Promedio de espera simulación 10 : 0.4953163118886804 
-Porcentaje de ocupación cajas normales 10 : 81.23893576125765 
-Porcentaje de ocupación cajas rápidas 10 : 58.076482583788945 
-Promedio de espera por intervalo10 : [0.5621802962804263, 0.44567468713834224, 0.47758510861843784] 
-
-Promedio de espera simulación 11 : 0.45547043650635066 
-Porcentaje de ocupación cajas normales 11 : 79.64392270475211 
-Porcentaje de ocupación cajas rápidas 11 : 59.627992915997275 
-Promedio de espera por intervalo11 : [0.4050279222411586, 0.42128076020852406, 0.5017209067903619] 
-
-Promedio de espera simulación 12 : 0.4627575364100372 
-Porcentaje de ocupación cajas normales 12 : 79.76162733325486 
-Porcentaje de ocupación cajas rápidas 12 : 55.81214141741684 
-Promedio de espera por intervalo12 : [0.4441338345098517, 0.4998314623312841, 0.4572791803904456] 
-
-Promedio de espera simulación 13 : 0.42664452923174745 
-Porcentaje de ocupación cajas normales 13 : 79.45974651796833 
-Porcentaje de ocupación cajas rápidas 13 : 55.29551199476636 
-Promedio de espera por intervalo13 : [0.32585968979610525, 0.431075730021207, 0.48484687492666595] 
-
-Promedio de espera simulación 14 : 0.5176579017122627 
-Porcentaje de ocupación cajas normales 14 : 80.94673510697675 
-Porcentaje de ocupación cajas rápidas 14 : 59.84706111372819 
-Promedio de espera por intervalo14 : [0.5925103753206209, 0.8531250399883991, 0.31059661168981756] 
-
-Promedio de espera simulación 15 : 0.5935537274015854 
-Porcentaje de ocupación cajas normales 15 : 80.68112626474182 
-Porcentaje de ocupación cajas rápidas 15 : 55.71159604379582 
-Promedio de espera por intervalo15 : [0.23347815985449039, 0.2947969121091013, 0.921494476523389] 
-
-Promedio de espera simulación 16 : 0.6447822468539374 
-Porcentaje de ocupación cajas normales 16 : 82.29639271115165 
-Porcentaje de ocupación cajas rápidas 16 : 58.83812145713175 
-Promedio de espera por intervalo16 : [0.3515683977762266, 1.2807554881421601, 0.5168588183590794] 
-
-Promedio de espera simulación 17 : 0.546092119162991 
-Porcentaje de ocupación cajas normales 17 : 82.27273822156202 
-Porcentaje de ocupación cajas rápidas 17 : 59.08470829572974 
-Promedio de espera por intervalo17 : [0.38057615790335003, 0.5066011336315505, 0.664506423245869] 
-
-Promedio de espera simulación 18 : 0.4842128617993507 
-Porcentaje de ocupación cajas normales 18 : 80.74160800537173 
-Porcentaje de ocupación cajas rápidas 18 : 55.05868486953431 
-Promedio de espera por intervalo18 : [0.6714460848188054, 0.5291265854445899, 0.34488642052572943] 
-
-Promedio de espera simulación 19 : 0.388879534832303 
-Porcentaje de ocupación cajas normales 19 : 77.95778498597386 
-Porcentaje de ocupación cajas rápidas 19 : 54.45078417388789 
-Promedio de espera por intervalo19 : [0.3469673033743519, 0.28101042428432144, 0.462993458996319] 
-
-Promedio de espera simulación 20 : 0.571054645490248 
-Porcentaje de ocupación cajas normales 20 : 79.77217147161035 
-Porcentaje de ocupación cajas rápidas 20 : 60.114339150283506 
-Promedio de espera por intervalo20 : [0.9362243391665156, 0.5994061160641552, 0.34367190916130497] 
-
-Promedio de espera simulación 21 : 0.6239458464045415 
-Porcentaje de ocupación cajas normales 21 : 79.37726137413253 
-Porcentaje de ocupación cajas rápidas 21 : 58.61970843817316 
-Promedio de espera por intervalo21 : [0.21693405598663615, 1.2568778965638312, 0.552797478060567] 
-
-Promedio de espera simulación 22 : 0.8059052497498652 
-Porcentaje de ocupación cajas normales 22 : 82.58430944500161 
-Porcentaje de ocupación cajas rápidas 22 : 57.29817962117928 
-Promedio de espera por intervalo22 : [0.3841970861126318, 1.955332622430713, 0.4914512603866044] 
-
-Promedio de espera simulación 23 : 0.4999908724455123 
-Porcentaje de ocupación cajas normales 23 : 81.50926756002193 
-Porcentaje de ocupación cajas rápidas 23 : 57.057398148322356 
-Promedio de espera por intervalo23 : [0.4297558355035624, 0.40383346271593307, 0.5831773940841798] 
-
-Promedio de espera simulación 24 : 0.3781920067602731 
-Porcentaje de ocupación cajas normales 24 : 77.13932815467678 
-Porcentaje de ocupación cajas rápidas 24 : 57.41582459922934 
-Promedio de espera por intervalo24 : [0.3338676056802408, 0.7101357062707626, 0.25508546598571813] 
-
-Promedio de espera simulación 25 : 0.5555016275368425 
-Porcentaje de ocupación cajas normales 25 : 79.10680385450276 
-Porcentaje de ocupación cajas rápidas 25 : 58.05773331399051 
-Promedio de espera por intervalo25 : [0.48488968949303973, 0.22571014045005633, 0.742141155529503] 
-
-Promedio de espera simulación 26 : 0.9537615844087767 
-Porcentaje de ocupación cajas normales 26 : 83.01838149963008 
-Porcentaje de ocupación cajas rápidas 26 : 59.81760606088546 
-Promedio de espera por intervalo26 : [0.38119110109008336, 2.5127475221920763, 0.5464112825908549] 
-
-Promedio de espera simulación 27 : 0.5708465482835188 
-Porcentaje de ocupación cajas normales 27 : 80.59844494453415 
-Porcentaje de ocupación cajas rápidas 27 : 58.82055849267604 
-Promedio de espera por intervalo27 : [0.4276455774063425, 0.30429936060068896, 0.7760481406794657] 
-
-Promedio de espera simulación 28 : 0.5774291305136551 
-Porcentaje de ocupación cajas normales 28 : 79.94550214234832 
-Porcentaje de ocupación cajas rápidas 28 : 53.960840486448596 
-Promedio de espera por intervalo28 : [0.7400866144524262, 0.6658052343049368, 0.4325688863678613] 
-
-Promedio de espera simulación 29 : 0.49165205461863726 
-Porcentaje de ocupación cajas normales 29 : 78.98233298933737 
-Porcentaje de ocupación cajas rápidas 29 : 55.05651672401723 
-Promedio de espera por intervalo29 : [0.9733417969512043, 0.42581980705134237, 0.22774577576360217] 
+Promedio de espera simulación 1 : 2591.4718960746204 
+Porcentaje de ocupación cajas normales 1 : 99.52463435978919 
+Porcentaje de ocupación cajas rápidas 1 : 4.742960217651934 
+Promedio de espera por intervalo1 : [12.324830872428908, 55.658465474731884, 118.90352109561086, 3818.417348997005] 
+Porcentaje ocupación por intervalos: [97.72711039821775, 99.5024875621891, 99.50248756218897, 99.54569226044671] % 
 
 
 ----------------
-Promedio de espera total: 0.5353253525003454 minutos
-Promedio ocupación de cajas normales total: 80.19623009048063 %
-Promedio ocupación de cajas rápidas total: 57.387683475351125 % 
-Promedio espera por intervalos: [0.4821807413600537, 0.6620225057727763, 0.502748049724433] minutos
+Promedio de espera total: 2611.7111320107556 minutos
+Promedio ocupación de cajas normales total: 99.47746665007875 %
+Promedio ocupación de cajas rápidas total: 4.688860854028191 % 
+Promedio espera por intervalos: [11.469947910502839, 53.035651441851876, 114.93896545011471, 3859.8949208558006] minutos 
+Promedio ocupación por intervalos: [94.40497702395288, 99.50248756218909, 99.50248756218903, 99.5326101895672] % $

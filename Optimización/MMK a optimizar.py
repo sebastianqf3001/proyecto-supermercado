@@ -70,6 +70,7 @@ class Persona:
         self.ya_fue_atendido=False
         self.escoge_caja_rapida = False
         self.indice_de_persona = indice  #Asignamos indice a persona
+        self.se_atiende_en_caja_cerrada=False
         
 
 class Caja:
@@ -136,11 +137,11 @@ def escoge_caja_rapida_o_normal():
         eleccion = "caja_normal"
     return eleccion
 
-def create_intervalos_temporales(numb_intervalos):
+def create_intervalos_temporales(numb_intervalos,lista_intervalos_inicio,lista_intervalos_final):
     intervalos=[]
     for i in range(numb_intervalos):
-        inicio=int(input("Ingrese inicio del intervalo "+str(i)+":"))
-        final=int(input("Ingrese final del intervalo "+str(i)+":"))
+        inicio=lista_intervalos_inicio[i]
+        final=lista_intervalos_final[i]
         intervalo=Intervalo(inicio,final)
         intervalos.append(intervalo)
 
@@ -149,8 +150,8 @@ def create_intervalos_temporales(numb_intervalos):
 def create_veces_que_se_abren_cajas(numb_abren_cajas):
     apertura_de_cajas=[]
     for i in range(numb_abren_cajas):
-        Hora_apertura=int(input("Ingrese a que hora quiere abrir cajas "+str(i)+":"))
-        cuantas=int(input("Ingrese cuantas quiere abrir "+str(i)+":"))
+        Hora_apertura=hora_apertura_de_cajas[i]
+        cuantas=cuantas_cajas_abre[i]
         apertura=Apertura_de_cajas_clase(Hora_apertura,cuantas)
         apertura_de_cajas.append(apertura)
 
@@ -159,8 +160,8 @@ def create_veces_que_se_abren_cajas(numb_abren_cajas):
 def create_veces_que_se_cierran_cajas(numb_cierran_cajas):
     cierre_de_cajas=[]
     for i in range(numb_cierran_cajas):
-        Hora_cierre=int(input("Ingrese a que hora quiere cerrar cajas "+str(i)+":"))
-        cuantas=int(input("Ingrese cuantas quiere cerrar "+str(i)+":"))
+        Hora_cierre=hora_que_cierra_cajas[i]
+        cuantas=cuantas_cajas_cierra[i]
         cierre=Cierre_de_cajas_clase(Hora_cierre,cuantas)
         cierre_de_cajas.append(cierre)
     
@@ -212,11 +213,24 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
                     apertura_de_cajas[i].ya_se_utilizo=True
 
                 elif Hay_alguna_caja_cerrada==True: #Si es que hay, abro cajas existentes
+                    
                     for a in range(apertura_de_cajas[i].cantidad):
-                        caja_menor_indice = 0
-                        while supermercado.cajas[caja_menor_indice].Cerrada == False:
-                            caja_menor_indice+=1
-                        supermercado.cajas[caja_menor_indice].Cerrada = False
+                        if Hay_alguna_caja_cerrada==True:
+                            caja_menor_indice = 0
+                            while supermercado.cajas[caja_menor_indice].Cerrada == False:
+                                caja_menor_indice+=1
+                            supermercado.cajas[caja_menor_indice].Cerrada = False
+
+                        elif Hay_alguna_caja_cerrada==False:
+                            supermercado.cajas.append(Caja(len(supermercado.cajas),False))
+
+                        Hay_alguna_caja_cerrada=False 
+                        for b in range(len(supermercado.cajas)):
+                            if supermercado.cajas[b].Cerrada==True:
+                                Hay_alguna_caja_cerrada=True
+                        
+
+
                     apertura_de_cajas[i].ya_se_utilizo=True
         
         for i in range(veces_que_se_cierra_cajas):    #Revisamos si es hora de cerrar cajas
@@ -343,7 +357,9 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
                     if supermercado.cajas[i].persona_siendo_atendida == persona_que_es_atendida_ahora:  #Busco la caja donde acaba de ser atendida la persona
                         caja_atendiendo = i
                 
-                
+                if supermercado.cajas[caja_atendiendo].Cerrada == True:
+                    supermercado.personas[persona_que_es_atendida_ahora].se_atiende_en_caja_cerrada=True    #Reviso si la persona se atendió en una caja que estaba cerrada
+
                 if supermercado.cajas[caja_atendiendo].Cola > 0:    #Reviso si esta caja tiene una cola, y si es que sí:
                     persona_que_iba_despues_de_la_que_acaba_de_ser_atendida = supermercado.cajas[caja_atendiendo].orden_de_clientes_en_cola[0] #Veo quién iba después de la persona que acaba de ser atendida
                     supermercado.personas[persona_que_iba_despues_de_la_que_acaba_de_ser_atendida].tiempo_total_en_cola = T - supermercado.personas[persona_que_iba_despues_de_la_que_acaba_de_ser_atendida].hora_que_entra_en_cola #Calculo cuanto estuvo esperando esta persona en la fila
@@ -428,6 +444,7 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
         Porcentaje_sumado_cajas_rapidas += supermercado.cajas_rapidas[i].tiempo_de_uso*100/T
     
     if cantidad_intervalos_temporales > 0:  #Si es que hay intervalos
+        
         for i in range(cantidad_intervalos_temporales):    #Para cada intervalo temporal
             personas_en_ese_intervalo=0
             for a in range(supermercado.Personas_totales): #Para cada persona, reviso si pertenece a ese intervalo temporal
@@ -437,19 +454,19 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
                 tiempo_en_la_mitad_de_su_espera_en_cola=(2*(supermercado.personas[a].hora_que_entra_en_cola)+supermercado.personas[a].tiempo_total_en_cola)/2
                 tiempo_que_empieza_su_atencion = supermercado.personas[a].hora_que_entra_en_cola + supermercado.personas[a].tiempo_total_en_cola
 
-                if  tiempo_en_la_mitad_de_su_espera_en_cola >= intervalos[i].tiempo_inicio and tiempo_en_la_mitad_de_su_espera_en_cola < intervalos[i].tiempo_final:
+                
+                if  supermercado.personas[a].hora_que_entra_en_cola >= intervalos[i].tiempo_inicio and supermercado.personas[a].hora_que_entra_en_cola < intervalos[i].tiempo_final: #Aqui se decide con que criterio una persona pertenece a un intervalo o a otro
                     
                     intervalos[i].tiempos_de_espera.append(supermercado.personas[a].tiempo_total_en_cola)
                     personas_en_ese_intervalo+=1
                 
-                if tiempo_que_empieza_su_atencion >= intervalos[i].tiempo_inicio and tiempo_que_empieza_su_atencion < intervalos[i].tiempo_final and supermercado.personas[a].escoge_caja_rapida == False:
+                if tiempo_que_empieza_su_atencion >= intervalos[i].tiempo_inicio and tiempo_que_empieza_su_atencion < intervalos[i].tiempo_final and supermercado.personas[a].escoge_caja_rapida == False and supermercado.personas[a].se_atiende_en_caja_cerrada==False:
+
                     if supermercado.personas[a].hora_de_atencion >= intervalos[i].tiempo_inicio and supermercado.personas[a].hora_de_atencion < intervalos[i].tiempo_final:
                         intervalos[i].tiempos_de_ocupacion.append(supermercado.personas[a].hora_de_atencion-tiempo_que_empieza_su_atencion)
                     else:
                         intervalos[i].tiempos_de_ocupacion.append(intervalos[i].tiempo_final - tiempo_que_empieza_su_atencion)
                         intervalos[i+1].tiempos_de_ocupacion.append(supermercado.personas[a].hora_de_atencion - intervalos[i].tiempo_final)
-
-
 
             Promedios_por_intervalos.append(sum(intervalos[i].tiempos_de_espera)/personas_en_ese_intervalo)
             if i != (cantidad_intervalos_temporales-1):
@@ -465,80 +482,89 @@ def Simulacion(Tfin,cantidad_de_cajas_normales, cantidad_de_cajas_rapidas,cantid
                 Promedio_ocupacion_real.append(Promedios_por_intervalo_cajas_normales[i]*(T_ultimo-intervalos[i].tiempo_inicio))
         Promedio_ocupacion_real=sum(Promedio_ocupacion_real)/(T_ultimo)
 
+        for i in range(len(intervalos)):
+            print(intervalos[i].cajas_abiertas)
+
     return [(ESTOT/supermercado.Personas_totales),(Promedio_ocupacion_real),
             (Porcentaje_sumado_cajas_rapidas/len(supermercado.cajas_rapidas)),(Promedios_por_intervalos),(Promedios_por_intervalo_cajas_normales)] #Returneamos estos promedios
 
     
 if __name__ == '__main__':
-
-    #Decisiones
-    Tiempo_simulación=720 #Para día completo: 720, Para 12:50 a 15:00: 160
-    Cajas_normales=1
-    Cajas_rapidas=8
-    intervalos_temporales=4
-    veces_que_se_abren_cajas=0
-    veces_que_se_cierran_cajas=0
-
-    iteraciones=30
-    
-
-    #Creación intervalos temporales
-    if intervalos_temporales>0:
-        intervalos = create_intervalos_temporales(intervalos_temporales)
-    else:
-        intervalos=[]
-    #Creación veces que se abre cajas:
-    if veces_que_se_abren_cajas>0:
-        apertura_de_cajas = create_veces_que_se_abren_cajas(veces_que_se_abren_cajas)
-    else:
-        apertura_de_cajas=[]
-    #Creación veces que se cierra cajas:
-    if veces_que_se_cierran_cajas>0:
-        cierre_de_cajas = create_veces_que_se_cierran_cajas(veces_que_se_cierran_cajas)
-    else:
-        cierre_de_cajas=[]
     # Archivo
-    path = 'simulation.txt'
+    path = 'Datos_Simulacion_Opti.txt'
     file = open(path, 'w', encoding='utf-8')
 
-    #Resultados
-    initial_time = time.time()
-    suma1=0
-    suma2=0
-    suma3=0
-    suma4=[0] * intervalos_temporales
-    suma5=[0] * intervalos_temporales
-    for i in range(iteraciones):
-        simu=Simulacion(Tiempo_simulación,Cajas_normales,Cajas_rapidas,intervalos_temporales,veces_que_se_abren_cajas,veces_que_se_cierran_cajas)
-        suma1+=simu[0]
-        suma2+=simu[1]
-        suma3+=simu[2]
-        suma4 = [a + b for a, b in zip(simu[3], suma4)]
-        suma5 = [a + b for a, b in zip(simu[4], suma5)]
+    for a in range(30):
+        #Decisiones
+        Tiempo_simulación=720 #Para día completo: 720, Para 12:50 a 15:00: 160
+        Cajas_normales= a+1
+        Cajas_rapidas=8
+        intervalos_temporales=4
+        veces_que_se_abren_cajas=0
+        veces_que_se_cierran_cajas=0
 
-        line = f"Promedio de espera simulación {i} : {simu[0]} \nPorcentaje de ocupación cajas normales {i} : {simu[1]} \nPorcentaje de ocupación cajas rápidas {i} : {simu[2]} \nPromedio de espera por intervalo{i} : {simu[3]} \n\n"
+        iteraciones=30
+        intervalos_temporales_lista_inicio=[0,100,300,500]
+        intervalos_temporales_lista_final=[100,300,500,100000000]
+
+        hora_que_cierra_cajas=[]
+        cuantas_cajas_cierra=[]
+
+        hora_apertura_de_cajas=[]
+        cuantas_cajas_abre=[]
+
+
+        #Creación intervalos temporales
+        if intervalos_temporales>0:
+            intervalos = create_intervalos_temporales(intervalos_temporales,intervalos_temporales_lista_inicio,intervalos_temporales_lista_final)
+        else:
+            intervalos=[]
+        #Creación veces que se abre cajas:
+        if veces_que_se_abren_cajas>0:
+            apertura_de_cajas = create_veces_que_se_abren_cajas(veces_que_se_abren_cajas,)
+        else:
+            apertura_de_cajas=[]
+        #Creación veces que se cierra cajas:
+        if veces_que_se_cierran_cajas>0:
+            cierre_de_cajas = create_veces_que_se_cierran_cajas(veces_que_se_cierran_cajas)
+        else:
+            cierre_de_cajas=[]
+
+        #Resultados
+        initial_time = time.time()
+        suma1=0
+        suma2=0
+        suma3=0
+        suma4=[0] * intervalos_temporales
+        suma5=[0] * intervalos_temporales
+        for i in range(iteraciones):
+            simu=Simulacion(Tiempo_simulación,Cajas_normales,Cajas_rapidas,intervalos_temporales,veces_que_se_abren_cajas,veces_que_se_cierran_cajas)
+            suma1+=simu[0]
+            suma2+=simu[1]
+            suma3+=simu[2]
+            suma4 = [a + b for a, b in zip(simu[3], suma4)]
+            suma5 = [a + b for a, b in zip(simu[4], suma5)]
+
+            line = f"Promedio de espera simulación {i} : {simu[0]} \nPorcentaje de ocupación cajas normales {i} : {simu[1]} \nPorcentaje de ocupación cajas rápidas {i} : {simu[2]} \nPromedio de espera por intervalo{i} : {simu[3]} \nPorcentaje ocupación por intervalos: {simu[4]} % \n\n"
+            file.write(line)
+
+            print("Promedio de espera simulación",i,":",simu[0],"\nPorcentaje de ocupación cajas normales",i,": ",simu[1],
+                "\nPorcentaje de ocupación cajas rápidas",i,": ",simu[2],
+                "\nPromedio de espera por intervalo",i,": ",simu[3],
+                "\nPorcentaje de ocupación por intervalo",i,": ",simu[4])
+
+        final_time = time.time()
+
+        line = f"\nCajas abiertas: {a+1}----------------\nPromedio de espera total: {suma1/iteraciones} minutos\nPromedio ocupación de cajas normales total: {suma2/iteraciones} %\nPromedio ocupación de cajas rápidas total: {suma3/iteraciones} % \nPromedio espera por intervalos: {[elemento / iteraciones for elemento in suma4]} minutos \nPromedio ocupación por intervalos: {[elemento / iteraciones for elemento in suma5]} % $"
         file.write(line)
+        
+        print("\nCajas abiertas:",a+1," ----------------\nPromedio de espera total:",suma1/iteraciones,"minutos\nPromedio ocupación de cajas normales total:",suma2/iteraciones,
+            "%\nPromedio ocupación de cajas rápidas total:",suma3/iteraciones,
+            "%\nPromedio espera por intervalos:",[elemento / iteraciones for elemento in suma4],"minutos",
+            "%\nPromedio ocupación por intervalos:",[elemento / iteraciones for elemento in suma5],"%")
+        print("\n----------------\nTiempo total de ejecución:",final_time-initial_time,"segundos")
 
-        print("Promedio de espera simulación",i,":",simu[0],"\nPorcentaje de ocupación cajas normales",i,": ",simu[1],
-            "\nPorcentaje de ocupación cajas rápidas",i,": ",simu[2],
-            "\nPromedio de espera por intervalo",i,": ",simu[3],
-            "\nPromedio de ocupación por intervalo",i,": ",simu[4])
+        #AJUSTAR PORCENTAJE DE OCUPACIÓN DE CAJAS QUE SE ABREN DESPUÉS
 
-    final_time = time.time()
-
-    line = f"\n----------------\nPromedio de espera total: {suma1/iteraciones} minutos\nPromedio ocupación de cajas normales total: {suma2/iteraciones} %\nPromedio ocupación de cajas rápidas total: {suma3/iteraciones} % \nPromedio espera por intervalos: {[elemento / iteraciones for elemento in suma4]} minutos \nPromedio ocupación por intervalos: {[elemento / iteraciones for elemento in suma5]} $"
-    file.write(line)
-    
-    print("\n----------------\nPromedio de espera total:",suma1/iteraciones,"minutos\nPromedio ocupación de cajas normales total:",suma2/iteraciones,
-        "%\nPromedio ocupación de cajas rápidas total:",suma3/iteraciones,
-        "%\nPromedio espera por intervalos:",[elemento / iteraciones for elemento in suma4],"minutos",
-        "%\nPromedio ocupación por intervalos:",[elemento / iteraciones for elemento in suma5],"%")
-    print("\n----------------\nTiempo total de ejecución:",final_time-initial_time,"segundos")
-
+        #1Preguntarle al gerente cómo dividen un día (a que hora cierran y abren cajas?)(Si no funciona hablando con el gerente, verlo por mi propia cuenta)
     file.close()
-
-
-
-    #AJUSTAR PORCENTAJE DE OCUPACIÓN DE CAJAS QUE SE ABREN DESPUÉS
-
-    #1Preguntarle al gerente cómo dividen un día (a que hora cierran y abren cajas?)(Si no funciona hablando con el gerente, verlo por mi propia cuenta)
